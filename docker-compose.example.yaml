@@ -33,22 +33,6 @@ services:
       - 8081:8081 # qbittorrent
     #network_mode: "service:gluetun"
 
-  # SABnzbd is used to download from usenet
-  sabnzbd:
-    image: lscr.io/linuxserver/sabnzbd:latest
-    container_name: sabnzbd
-    environment:
-      - PUID=${PUID}
-      - PGID=${PGID}
-      - TZ=America/Montevideo
-    volumes:
-      - /etc/localtime:/etc/localtime:ro
-      - ${MEDIA_DIRECTORY}:/data
-      - ${INSTALL_DIRECTORY}/config/sabnzbd:/config
-    ports: # sabnzbd
-      - 8080:8080 # sabnzbd
-    restart: unless-stopped
-    #network_mode: "service:gluetun"
 
   # Sonarr is used to query, add downloads to the download queue and index TV shows
   # https://sonarr.tv/
@@ -80,38 +64,6 @@ services:
       - ${INSTALL_DIRECTORY}/config/radarr:/config
     ports:
       - 7878:7878
-    restart: unless-stopped
-
-  # Lidarr is used to query, add downloads to the download queue and index Music
-  # https://lidarr.audio/
-  lidarr:
-    image: lscr.io/linuxserver/lidarr
-    container_name: lidarr
-    environment:
-      - PUID=${PUID}
-      - PGID=${PGID}
-    volumes:
-      - /etc/localtime:/etc/localtime:ro
-      - ${MEDIA_DIRECTORY}:/data
-      - ${INSTALL_DIRECTORY}/config/lidarr:/config
-    ports:
-      - 8686:8686
-    restart: unless-stopped
-
-  # Readarr is used to query, add downloads to the download queue and index Audio and Ebooks
-  # https://readarr.com/
-  readarr:
-    image: lscr.io/linuxserver/readarr:develop
-    container_name: readarr
-    environment:
-      - PUID=${PUID}
-      - PGID=${PGID}
-    volumes:
-      - /etc/localtime:/etc/localtime:ro
-      - ${MEDIA_DIRECTORY}:/data
-      - ${INSTALL_DIRECTORY}/config/readarr:/config
-    ports:
-      - 8787:8787
     restart: unless-stopped
 
   # Bazarr is used to download and categorize subtitles
@@ -168,18 +120,6 @@ services:
       - OPENVPN_CIPHERS=AES-256-GCM
       - PORT_FORWARD_ONLY=on
       - VPN_PORT_FORWARDING=on
-    restart: unless-stopped
-
-  # Portainer helps debugging and monitors the containers
-  portainer:
-    image: portainer/portainer-ce
-    container_name: portainer
-    ports:
-      - 9000:9000
-    volumes:
-      - /etc/localtime:/etc/localtime:ro
-      - /var/run/docker.sock:/var/run/docker.sock:ro
-      - ${INSTALL_DIRECTORY}/config/portainer:/data
     restart: unless-stopped
 
   # Watchtower is going to keep our instances updated
